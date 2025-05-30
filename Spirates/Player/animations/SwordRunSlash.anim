@@ -1,0 +1,110 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!74 &7400000
+AnimationClip:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SwordRunSlash
+  serializedVersion: 6
+  m_Legacy: 0
+  m_Compressed: 0
+  m_UseHighQualityCurve: 1
+  m_RotationCurves: []
+  m_CompressedRotationCurves: []
+  m_EulerCurves: []
+  m_PositionCurves: []
+  m_ScaleCurves: []
+  m_FloatCurves: []
+  m_PPtrCurves:
+  - curve:
+    - time: 0
+      value: {fileID: 21300000, guid: f6561e0b15ce62e4593a12303cc5aa6c, type: 3}
+    - time: 0.13333334
+      value: {fileID: 21300000, guid: 92df5039c3d6b4f4aaab265b3ebcaa55, type: 3}
+    - time: 0.26666668
+      value: {fileID: 21300000, guid: cf6bf0121a291964bac7c778aa39bde8, type: 3}
+    - time: 0.4
+      value: {fileID: 21300000, guid: d3712fc32f4ac5e4fa33753c229065bb, type: 3}
+    - time: 0.53333336
+      value: {fileID: 21300000, guid: 4ce14ac494b115e4da12496294f504f1, type: 3}
+    - time: 0.6666667
+      value: {fileID: 21300000, guid: 7ef48f5b544cc0a49905fbf206cc5475, type: 3}
+    - time: 0.8
+      value: {fileID: 21300000, guid: 6d74ec70a74a9024bbf7609b7244a79e, type: 3}
+    - time: 0.9166667
+      value: {fileID: 21300000, guid: d7d4cba438b39d14180f212601a59ea4, type: 3}
+    attribute: m_Sprite
+    path: 
+    classID: 212
+    script: {fileID: 0}
+  m_SampleRate: 60
+  m_WrapMode: 0
+  m_Bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  m_ClipBindingConstant:
+    genericBindings:
+    - serializedVersion: 2
+      path: 0
+      attribute: 0
+      script: {fileID: 0}
+      typeID: 212
+      customType: 23
+      isPPtrCurve: 1
+    pptrCurveMapping:
+    - {fileID: 21300000, guid: f6561e0b15ce62e4593a12303cc5aa6c, type: 3}
+    - {fileID: 21300000, guid: 92df5039c3d6b4f4aaab265b3ebcaa55, type: 3}
+    - {fileID: 21300000, guid: cf6bf0121a291964bac7c778aa39bde8, type: 3}
+    - {fileID: 21300000, guid: d3712fc32f4ac5e4fa33753c229065bb, type: 3}
+    - {fileID: 21300000, guid: 4ce14ac494b115e4da12496294f504f1, type: 3}
+    - {fileID: 21300000, guid: 7ef48f5b544cc0a49905fbf206cc5475, type: 3}
+    - {fileID: 21300000, guid: 6d74ec70a74a9024bbf7609b7244a79e, type: 3}
+    - {fileID: 21300000, guid: d7d4cba438b39d14180f212601a59ea4, type: 3}
+  m_AnimationClipSettings:
+    serializedVersion: 2
+    m_AdditiveReferencePoseClip: {fileID: 0}
+    m_AdditiveReferencePoseTime: 0
+    m_StartTime: 0
+    m_StopTime: 0.93333334
+    m_OrientationOffsetY: 0
+    m_Level: 0
+    m_CycleOffset: 0
+    m_HasAdditiveReferencePose: 0
+    m_LoopTime: 1
+    m_LoopBlend: 0
+    m_LoopBlendOrientation: 0
+    m_LoopBlendPositionY: 0
+    m_LoopBlendPositionXZ: 0
+    m_KeepOriginalOrientation: 0
+    m_KeepOriginalPositionY: 1
+    m_KeepOriginalPositionXZ: 0
+    m_HeightFromFeet: 0
+    m_Mirror: 0
+  m_EditorCurves: []
+  m_EulerEditorCurves: []
+  m_HasGenericRootTransform: 0
+  m_HasMotionFloatCurves: 0
+  m_Events:
+  - time: 0.26666668
+    functionName: DamageEnemies
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.6666667
+    functionName: DamageEnemies
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.9166667
+    functionName: EndAttack
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
