@@ -108,7 +108,8 @@ public class TestEnemy : EnemyBase
                     if (Time.time - lastAttackTime >= attackCooldown)
                     {
                         animator.SetFloat("Speed", 0);
-                        animator.SetTrigger("Attack");
+                        //animator.SetTrigger("Attack");
+                        //player.GetComponent<PlayerStats>()?.TakeDamage(1);
                         lastAttackTime = Time.time;  // 记录攻击时间
                     }
                 }

@@ -1,18 +1,53 @@
 using UnityEngine;
+using GameModule;
 using System.Collections;
+using System.Collections.Generic;
 
-public abstract class EnemyBase : MonoBehaviour
+public abstract class EnemyBase : MonoBehaviour, ICombatActor
 {
     [Header("Enemy Config")]
-    protected Rigidbody2D rb;
-    protected Animator animator;
+    public Rigidbody2D rb;
+    private Animator _animator;
+    public Animator animator => _animator;
     protected Vector3 originalScale;
     protected Vector3 respawnPosition;
-    protected int currentHealth;
+    private int _maxHealth = 1;
+    public int maxHealth => _maxHealth;
+    private int _currentHealth;
+    public int currentHealth{
+        get => _currentHealth;
+        set => _currentHealth = Mathf.Clamp(value, 0, _maxHealth);
+    }
     protected bool isDead;
-    public int maxHealth = 100;
-    public float knockbackForce = 1f;
+
+    private float _maxPoise = 100f;
+    public float maxPoise => _maxPoise;
+
+    private float _currentPoise;
+    public float currentPoise{
+        get => _currentPoise;
+        set => _currentPoise = Mathf.Clamp(value, 0, _maxPoise);
+    }
+    private bool _isInvincible;
+    public bool isInvincible{
+        get => _isInvincible;
+        set => _isInvincible = value;
+    }
+    private float _attackPower;
+    public float attackPower => _attackPower;
+    private float _defensePower = 2;
+    public float defensePower => _defensePower;
     public Transform player;
+
+    public GameObject ItemPickup_Prefab;
+    public List<Item> dropItemAssets = new List<Item>();
+    public List<int> dropQuantities = new List<int>();
+    public List<float> dropChances = new List<float>();
+    public float minDrop = 0.8f;
+    public float maxDrop = 1.2f;
+    public float stackOffset = 1.0f;
+
+    
 
     void Start()
     {
@@ -26,40 +61,106 @@ public abstract class EnemyBase : MonoBehaviour
     protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
+        _animator = GetComponent<Animator>();
         respawnPosition = transform.position;
         originalScale = transform.localScale;
-        currentHealth = maxHealth;
+        _currentHealth = _maxHealth;
+        _currentPoise = _maxPoise;
+        
     }
 
-    public virtual void TakeDamage(int damage, Vector2 knockbackDirection)
-    {
-        if (isDead) return;
-
-        currentHealth -= damage;
-        Debug.Log($"{gameObject.name} 受到攻击，伤害：{damage}，当前血量：{currentHealth}");
-
-        if (currentHealth <= 0)
-        {
-            Die();
-            return;
-        }
-
-        animator.SetTrigger("Hit");
-        rb.AddForce(Vector2.up * knockbackForce, ForceMode2D.Impulse);
-    }
-
-    protected virtual void Die()
+    public virtual void Die()
     {
         isDead = true;
-        animator.SetBool("IsDead", true);
-        animator.SetTrigger("Die");
+        _animator.SetBool("IsDead", true);
+        _animator.SetTrigger("Die");
+    }
+
+    public void OnPoiseBreak()
+    {
+        StartCoroutine(DisableInvincibilityAfterDelay());
+    }
+
+    private IEnumerator DisableInvincibilityAfterDelay()
+    {
+        yield return new WaitForSeconds(1f);
+        _isInvincible = false;
     }
 
     public virtual void OnDieEnd()
     {
+        Debug.Log("Die");
+        SpawnStackedDrops();
         StartCoroutine(DisappearThenRespawn());
     }
+
+    private void SpawnStackedDrops()
+    {
+        if (ItemPickup_Prefab == null || dropItemAssets == null || dropItemAssets.Count == 0)
+            return;
+
+        int count = dropItemAssets.Count;
+        for (int i = 0; i < count; i++)
+        {
+            // 确保索引在 dropQuantities 和 dropChances 范围内
+            if (i >= dropQuantities.Count || i >= dropChances.Count)
+                continue;
+
+            Item asset = dropItemAssets[i];      // 这个 Asset 本身可能包含一个 internal count（如：一次 100 枚）
+            int attempts = dropQuantities[i];    // “尝试生成 Prefab 的次数”
+            float chance = dropChances[i];       // 每次尝试的掉落概率
+
+            // 0 或以下就不生成
+            if (attempts <= 0 || chance <= 0f)
+                continue;
+
+            for (int k = 0; k < attempts; k++)
+            {
+                // 每一次都做一次独立概率判定
+                if (Random.value <= chance)
+                {
+                    // 随机偏移后实例化一个 Prefab
+                    Vector3 spawnPos = transform.position;
+                    float offsetX = Random.Range(-stackOffset, stackOffset);
+                    float offsetY = Random.Range(-stackOffset, stackOffset);
+                    spawnPos.x += offsetX;
+                    spawnPos.y += offsetY + 2.0f; 
+                    // +0.1f 防止一生成就卡在地面里
+
+                    GameObject go = Instantiate(ItemPickup_Prefab, spawnPos, Quaternion.identity);
+
+                    // 拿到 ItemPickup 脚本，把 Asset 赋进去
+                    var pickup = go.GetComponent<ItemPickup>();
+                    if (pickup != null)
+                    {
+                        if (asset is Currency currencyAsset)
+                        {
+                            // 先拿到资产里配置的基础数量
+                            int baseAmount = currencyAsset.amount;
+                            // 随机倍数 [minDrop, maxDrop]
+                            float randMul = Random.Range(minDrop, maxDrop);
+                            // 计算最终数量，四舍五入并且至少 1
+                            int randomAmt = Mathf.Max(1, Mathf.RoundToInt(baseAmount * randMul));
+                            // 给 asset.amount 赋上随机值
+                            currencyAsset.amount = randomAmt;
+                        }
+                        pickup.itemAsset = asset;
+                        // 不再手动拆分数量，保持 asset 里定义的堆叠数量（例如 asset.count = 100）
+                        // 这里不修改 pickup.quantity，让它默认使用 asset 里配置的值
+                    }
+
+                    // 给 Prefab 的 SpriteRenderer 赋图
+                    var sr = go.GetComponent<SpriteRenderer>();
+                    if (sr != null && asset != null)
+                    {
+                        sr.sprite = asset.icon;
+                    }
+                }
+            }
+        }
+    }   
+
+
 
     protected virtual IEnumerator DisappearThenRespawn()
     {
@@ -80,8 +181,10 @@ public abstract class EnemyBase : MonoBehaviour
     protected virtual void Respawn()
     {
         isDead = false;
-        currentHealth = maxHealth;
+        _currentHealth = _maxHealth;
+        _currentPoise = _maxPoise;
+        _isInvincible = false; 
         transform.position = respawnPosition;
-        animator.SetBool("IsDead", false);
+        _animator.SetBool("IsDead", false);
     }
 }

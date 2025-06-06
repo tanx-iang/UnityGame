@@ -1,64 +1,141 @@
 using UnityEngine;
+using GameModule;
+using System.Collections;
+using System.Collections.Generic; 
 
 public class PlayerCombat : MonoBehaviour
 {
-    private Animator animator;
-    public bool isAttacking { get; private set; }
+    public Transform attackPoint;
+    public LayerMask enemyLayer;
 
-    void Awake()
+    private Animator animator;
+    private Player player;
+    public bool IsAttacking { get; private set; }
+
+    public List<ScriptableObject> skillAssets;
+    private Dictionary<string, IAttackBehavior> skillMap = new();
+
+    public CombatSystem combat;
+
+    public void Init(Player player)
     {
-        animator = GetComponent<Animator>();
+        this.animator = player.animator;
+        this.player = player;
+        combat = new CombatSystem();
+        combat.Init(player, null, player);
+        foreach (var so in skillAssets)
+        {
+            if (so is IAttackBehavior skill)
+                skillMap[so.name] = skill;
+        }
     }
 
-    // 参数 isGrounded 由 PlayerController 传入
-    public void HandleCombat(bool isGrounded)
+    public void HandleCombat()
     {
-        if (isAttacking) return;
-        
-        // 地面攻击
-        if (isGrounded)
+        if (IsAttacking) return;
+
+        // 判断是否在地面
+        if (player.movement.IsGrounded && !player.movement.isJumping)
         {
+            // 地面攻击
             if (Input.GetKeyDown(KeyCode.J))
             {
-                isAttacking = true;
+                IsAttacking = true;
+
                 if (Input.GetKey(KeyCode.W))
+                {
                     animator.SetTrigger("Attack3");  // 地面普通上击
+                }
                 else if (Input.GetKey(KeyCode.S))
+                {
                     animator.SetTrigger("Attack1");  // 地面普通下砸
+                }
                 else
+                {
                     animator.SetTrigger("Attack2");  // 地面普通前击
+                }
             }
             else if (Input.GetKeyDown(KeyCode.K))
             {
-                isAttacking = true;
+                IsAttacking = true;
+
                 if (Input.GetKey(KeyCode.W))
+                {
                     animator.SetTrigger("Attack4");  // 地面重上击
+                }
                 else if (Input.GetKey(KeyCode.S))
+                {
                     animator.SetTrigger("Attack6");  // 地面重下劈
+                }
                 else
+                {
                     animator.SetTrigger("Attack5");  // 地面重前冲
+                }
             }
         }
-        // 空中攻击：仅允许武器为1时执行
+        else  // 角色不在地面时
+        {
+            if (animator.GetInteger("WeaponType") == 1)
+            {
+                if (Input.GetKeyDown(KeyCode.J))
+                {
+                    IsAttacking = true;
+
+                    if (Input.GetKey(KeyCode.W))
+                    {
+                        animator.SetTrigger("Attack7");  // 空中上击
+                    }
+                    else
+                    {
+                        animator.SetTrigger("Attack8");  // 空中前冲
+                    }
+                }
+            }
+        }
+    }
+
+    public void TriggerAttack(string skillName)
+    {
+        if (skillMap.TryGetValue(skillName, out var attack))
+        {
+            AttackEnemies(attack); 
+        }
         else
         {
-            if (animator.GetInteger("WeaponType") == 1 && Input.GetKeyDown(KeyCode.J))
-            {
-                isAttacking = true;
-                if (Input.GetKey(KeyCode.W))
-                    animator.SetTrigger("Attack7");  // 空中上击
-                else if (Input.GetKey(KeyCode.S))
-                    animator.SetTrigger("Attack8");  // 空中下劈
-                else
-                    animator.SetTrigger("Attack9");  // 空中前冲
-            }
+            Debug.LogWarning($"can not find：{skillName}");
         }
     }
-    
-    // 在动画事件中调用此方法结束攻击
+
+    public void AttackEnemies(IAttackBehavior currentAttack)
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, currentAttack.Range, enemyLayer);
+        bool hitEnemy = false;
+        foreach (Collider2D hit in hits)
+        {
+             ICombatActor target = hit.GetComponent<ICombatActor>();
+            if (target != null)
+            {
+                hitEnemy = true;
+                combat.Init(player, target, player); // this 是 MonoBehaviour 脚本
+                combat.ExecuteHit(currentAttack);
+            }
+        }
+        if(!hitEnemy){
+            Debug.Log("Miss");
+        }
+    }
+
     public void EndAttack()
     {
-        isAttacking = false;
-        animator.SetTrigger("DefaultTrigger");
+        IsAttacking = false;
+        if(!IsAttacking){
+            animator.SetTrigger("DefaultTrigger");
+        }
+    }
+
+    public void ResetCombatStatus()
+    {
+        IsAttacking = false;
     }
 }
+
