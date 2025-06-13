@@ -18,3 +18,5 @@ MonoBehaviour:
   attackBonus: 1
   defenseBonus: 0
   poiseBonus: 0
+  Level: 1
+  maxLevel: 5

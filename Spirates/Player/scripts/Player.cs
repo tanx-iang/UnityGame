@@ -8,7 +8,7 @@ public class Player : MonoBehaviour, ICombatActor
     public PlayerInventory inventory;
 
     private Animator _animator;
-    public Animator animator => _animator;  // 只读实现接口
+    public Animator animator => _animator;  
     public Rigidbody2D rb;
 
     public float attackPower => stats.attackPower;
@@ -37,10 +37,10 @@ public class Player : MonoBehaviour, ICombatActor
     public void Die(){
         stats.Die();
     }
+
     public void OnPoiseBreak(){
         stats.OnPoiseBreak();
     }
-
 
     void Awake()
     {
@@ -51,8 +51,8 @@ public class Player : MonoBehaviour, ICombatActor
 
     void Start()
     {
-        stats.Init(this);         // 初始化生命等
-        movement.Init(this);    // 设置 Rigidbody2D
+        stats.Init(this);         
+        movement.Init(this);    
         combat.Init(this);
         inventory.Init(this);
 
@@ -66,7 +66,7 @@ public class Player : MonoBehaviour, ICombatActor
             _animator.SetInteger("WeaponType", 0);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKeyDown(KeyCode.Alpha2) && inventory.equippedWeapon != null)
         {
             _animator.SetInteger("WeaponType", 1);
         }
@@ -86,7 +86,7 @@ public class Player : MonoBehaviour, ICombatActor
 
         movement.UpdateDash(Time.deltaTime);
 
-        if (transform.position.y < movement.deathY)
+        if (transform.position.y < stats.respawnPoint.y - 80f)
         {
             Respawn();
         }
@@ -100,13 +100,16 @@ public class Player : MonoBehaviour, ICombatActor
 
     private void HandleDeath()
     {
-        Respawn();
+        animator.SetTrigger("Die");
     }
 
     public void Respawn()
     {
-        transform.position = stats.respawnPoint;          // 位置归位
+        transform.position = stats.respawnPoint;          
         rb.velocity = Vector2.zero;
+        int halfGold = inventory.Gold / 2;
+        inventory.Gold -= halfGold;
+        inventory.Soul = 0;
         stats.ResetStatus();
         movement.ResetStatus();
         combat.ResetCombatStatus();

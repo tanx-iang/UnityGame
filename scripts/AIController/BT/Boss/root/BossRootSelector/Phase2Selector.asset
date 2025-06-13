@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec7deafe55a5c4873beedebc942e2739, type: 3}
+  m_Name: Phase2Selector
+  m_EditorClassIdentifier: 
+  type: 1
+  children:
+  - {fileID: 11400000, guid: 98af10a782cec4e38ba57e6cb848790a, type: 2}
+  - {fileID: 11400000, guid: 02a121f9568ae47cd99f89cb41f2e09d, type: 2}
+  - {fileID: 11400000, guid: d3d09c07bf04a4af7829f65b0bde4261, type: 2}

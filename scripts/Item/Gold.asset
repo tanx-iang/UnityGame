@@ -15,4 +15,4 @@ MonoBehaviour:
   itemName: Gold
   description: to buy
   icon: {fileID: 1155073396, guid: a441f69f363664769b7d47ffeae0da42, type: 3}
-  amount: 105
+  amount: 100

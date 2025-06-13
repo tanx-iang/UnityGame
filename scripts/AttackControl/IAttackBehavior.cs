@@ -8,8 +8,6 @@ namespace GameModule
         float Range { get; }
         float PoiseBreak { get; }
         float Cooldown { get; }
-
-        bool IsReady();
     }
 }
 

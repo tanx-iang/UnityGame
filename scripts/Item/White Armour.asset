@@ -17,4 +17,6 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 2c150f659ced645b0b9f0038f019173b, type: 3}
   attackBonus: 0
   defenseBonus: 1
-  poiseBonus: 10
+  poiseBonus: 100
+  Level: 1
+  maxLevel: 5

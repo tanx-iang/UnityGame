@@ -8,10 +8,11 @@ namespace GameModule
         public float attackBonus;
         public float defenseBonus;
         public float poiseBonus;
+        public int Level = 1;
+        public int maxLevel = 5;
 
         public override void Use()
         {
-            // TODO: 装备穿戴逻辑
         }
 
         public override bool IsConsumable()

@@ -15,4 +15,4 @@ MonoBehaviour:
   itemName: Soul
   description: to upgrade
   icon: {fileID: 815787022, guid: 753333152a5ea43d799bf8a40a1cb423, type: 3}
-  amount: 129
+  amount: 100

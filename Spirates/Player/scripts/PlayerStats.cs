@@ -4,6 +4,8 @@ using System;
 using GameModule;
 using System.Collections;
 
+using System.Diagnostics;
+
 
 public class PlayerStats : MonoBehaviour
 {
@@ -15,10 +17,14 @@ public class PlayerStats : MonoBehaviour
     public bool isDead;
 
     public event Action OnDeath;
+    public static event Action onPlayerEnterSafehouse;
 
     public float maxPoise = 100f;
     public float currentPoise;
     public bool isInvincible = false;
+
+    public int Level = 1;
+    public int maxLevel = 30;
 
     public float attackPower;
     public float defensePower;
@@ -39,16 +45,14 @@ public class PlayerStats : MonoBehaviour
 
     public void Die(){
         OnDeath?.Invoke();
+    }
+
+    public static void PlayerEnterSafehouse(){
+        onPlayerEnterSafehouse?.Invoke();
     }    
     
     public void OnPoiseBreak()
     {
-        StartCoroutine(DisableInvincibilityAfterDelay());
-    }
-
-    private IEnumerator DisableInvincibilityAfterDelay()
-    {
-        yield return new WaitForSeconds(1f);
         isInvincible = false;
     }
 

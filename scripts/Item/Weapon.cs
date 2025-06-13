@@ -8,7 +8,6 @@ namespace GameModule
     {
         public override void Use()
         {
-            // TODO: 装备武器逻辑
         }
 
         public override bool IsConsumable()

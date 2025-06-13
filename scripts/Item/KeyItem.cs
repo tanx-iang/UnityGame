@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Linq;
 
 namespace GameModule
 {
@@ -7,6 +8,10 @@ namespace GameModule
     {
         public string targetId;
 
+        public KeyItem(string targetId){
+            this.targetId = targetId;
+        }
+
         public bool CanUnlock(string doorId)
         {
             return targetId == doorId;
@@ -14,7 +19,6 @@ namespace GameModule
 
         public override void Use()
         {
-            // TODO: 触发开门逻辑
         }
 
         public override bool IsConsumable()

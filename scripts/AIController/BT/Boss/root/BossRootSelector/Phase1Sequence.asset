@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8084a9100c0f4dfe9f47e2af8d9cf1a, type: 3}
+  m_Name: Phase1Sequence
+  m_EditorClassIdentifier: 
+  type: 0
+  children:
+  - {fileID: 11400000, guid: 4beb3d2f4d77344cfa107be92c718302, type: 2}
+  - {fileID: 11400000, guid: f9708825834174f0eb1bded0d9f91487, type: 2}

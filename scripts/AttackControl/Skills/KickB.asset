@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseDamage: 1.5
   range: 2
-  poiseBreak: 50
+  poiseBreak: 100
   cooldown: 1

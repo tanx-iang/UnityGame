@@ -2,13 +2,11 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("基础移动参数")]
     public float moveSpeed = 3f;
     public float sprintMultiplier = 2f;
     public float jumpForce = 8f;
     public int maxJumps = 2;
     public float dashForce = 30f;
-    public float deathY = -10f;
 
     private Rigidbody2D rb;
     private Animator animator;

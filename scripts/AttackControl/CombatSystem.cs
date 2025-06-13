@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GameModule;
 
-public class CombatSystem
+public class CombatSystem : MonoBehaviour
 {
     private ICombatActor attacker;
     private ICombatActor target;
@@ -16,9 +16,10 @@ public class CombatSystem
     }
 
     public void ExecuteHit(IAttackBehavior attack){
+        Debug.Log(target.isInvincible);
         if (target.isInvincible) return;
         int damage = Mathf.RoundToInt(attack.BaseDamage * Mathf.Max(0, (attacker.attackPower - target.defensePower)));
-        ReducePoise(attack.PoiseBreak); //放攻击者的削韧
+        ReducePoise(attack.PoiseBreak); 
         TakeDamage(target,damage);
     }
 
